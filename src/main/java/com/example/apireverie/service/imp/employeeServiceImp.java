@@ -7,12 +7,13 @@ import com.example.apireverie.repository.IEmployeeRepository;
 import com.example.apireverie.service.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class employeeServiceImp implements IEmployeeService {
+public class EmployeeServiceImp implements IEmployeeService {
 
     @Autowired
     private IEmployeeRepository iEmployeeRepository;
@@ -47,4 +48,24 @@ public class employeeServiceImp implements IEmployeeService {
                 request.getPhoto() != null ? request.getPhoto() : " "
         );
     }
+
+    @Override
+    public void updateEmployee(int id, EmployeeRequest request) {
+        iEmployeeRepository.updateEmployee(
+                id,
+                emptyToNull(request.getName()),
+                emptyToNull(request.getSurname()),
+                emptyToNull(request.getUsername()),
+                emptyToNull(request.getPasswordHash()),
+                emptyToNull(request.getShift()),
+                emptyToNull(request.getPhone()),
+                emptyToNull(request.getPhoto()),
+                request.getRole()
+        );
+    }
+
+    private String emptyToNull(String value) {
+        return (value == null || value.trim().isEmpty()) ? null : value;
+    }
+
 }

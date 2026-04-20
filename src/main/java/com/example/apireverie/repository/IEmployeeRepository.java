@@ -2,8 +2,11 @@ package com.example.apireverie.repository;
 
 import com.example.apireverie.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface IEmployeeRepository extends JpaRepository<Employee, Integer> {
 
@@ -18,4 +21,21 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Integer> {
             @Param("in_phone") String phone,
             @Param("in_photo") String photo
     );
+
+    @Modifying
+    @Transactional
+    @Query(value = "CALL updateEmployee(:id, :name, :surname, :username, :passwordHash, :shift, :phone, :photo, :role)", nativeQuery = true)
+    void updateEmployee(
+            @Param("id") int id,
+            @Param("name") String name,
+            @Param("surname") String surname,
+            @Param("username") String username,
+            @Param("passwordHash") String passwordHash,
+            @Param("shift") String shift,
+            @Param("phone") String phone,
+            @Param("photo") String photo,
+            @Param("role") String role
+    );
+
+
 }
