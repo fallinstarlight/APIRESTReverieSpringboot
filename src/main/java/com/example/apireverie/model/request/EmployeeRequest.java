@@ -11,4 +11,7 @@ public class EmployeeRequest {
     private String shift;
     private String phone;
     private String photo;
+    private String role;
+
+
 }

@@ -34,4 +34,18 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateEmployee(
+            @PathVariable int id,
+            @RequestBody EmployeeRequest request
+    ) {
+        try {
+            iEmployeeService.updateEmployee(id, request);
+            return ResponseEntity.ok("Employee updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
