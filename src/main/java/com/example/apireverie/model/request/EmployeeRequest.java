@@ -12,6 +12,4 @@ public class EmployeeRequest {
     private String phone;
     private String photo;
     private String role;
-
-
 }

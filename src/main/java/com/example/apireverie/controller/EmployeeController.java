@@ -17,13 +17,11 @@ public class EmployeeController {
     @Autowired
     private IEmployeeService iEmployeeService;
 
-
     @GetMapping("/all")
     public ResponseEntity<List<EmployeeResponse>> getAllSubjects() {
         List<EmployeeResponse> employees = iEmployeeService.getEmployees();
         return ResponseEntity.ok(employees);
     }
-
 
     @PostMapping("/add")
     public ResponseEntity<String> createEmployee(@RequestBody EmployeeRequest request) {
@@ -34,7 +32,6 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEmployee(
             @PathVariable int id,
@@ -47,5 +44,13 @@ public class EmployeeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable Integer id) {
+        try {
+            iEmployeeService.deleteEmployee(id);
+            return ResponseEntity.ok("Employee deactivated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

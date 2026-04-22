@@ -18,10 +18,17 @@ public class EmployeeServiceImp implements IEmployeeService {
     @Autowired
     private IEmployeeRepository iEmployeeRepository;
 
+    /* ---- Método del compañero (GET) ---- */
     @Override
     public List<EmployeeResponse> getEmployees() {
         List<EmployeeResponse> response = new ArrayList<>();
-        List<Employee> employees = iEmployeeRepository.findAll();
+
+        /**
+         * Filters only active employees (state = 'alive').
+         * @author Luis Fernando Tolentino Segovia
+         */
+        List<Employee> employees = iEmployeeRepository.findActiveEmployees();
+
         for (Employee e : employees) {
             EmployeeResponse er = new EmployeeResponse();
             er.setID(e.getId());
@@ -36,6 +43,10 @@ public class EmployeeServiceImp implements IEmployeeService {
         return response;
     }
 
+    /**
+     * Calls the stored procedure inEmployee to insert a new employee.
+     * @author Luis Fernando Tolentino Segovia
+     */
     @Override
     public void createEmployee(EmployeeRequest request) {
         iEmployeeRepository.insertEmployee(
@@ -49,6 +60,7 @@ public class EmployeeServiceImp implements IEmployeeService {
         );
     }
 
+    /* ---- Método del compañero (PUT) ---- */
     @Override
     public void updateEmployee(int id, EmployeeRequest request) {
         iEmployeeRepository.updateEmployee(
@@ -64,8 +76,20 @@ public class EmployeeServiceImp implements IEmployeeService {
         );
     }
 
+    /**
+     * Deactivates an employee by their ID (soft delete).
+     * @author Luis Fernando Tolentino Segovia
+     */
+    @Override
+    @Transactional
+    public void deleteEmployee(Integer id) {
+        if (!iEmployeeRepository.existsById(id)) {
+            throw new RuntimeException("Employee not found");
+        }
+        iEmployeeRepository.deactivateEmployee(id);
+    }
+
     private String emptyToNull(String value) {
         return (value == null || value.trim().isEmpty()) ? null : value;
     }
-
 }

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface IEmployeeRepository extends JpaRepository<Employee, Integer> {
 
     /* Llama al procedimiento inEmployee de la base de datos */
@@ -37,5 +39,18 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Integer> {
             @Param("role") String role
     );
 
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM employees WHERE employee_id = :id", nativeQuery = true)
+    void deactivateEmployee(@Param("id") Integer id);
 
+    @Query(value = "SELECT employee_id AS ID, " +
+            "CONCAT(e_name, ' ', e_surname) AS Name, " +
+            "e_totalSales AS 'Total Sales', " +
+            "e_todaySales AS 'Today Sales', " +
+            "e_profilePhoto AS Photo, " +
+            "e_role AS Role, " +
+            "e_shift AS Shift " +
+            "FROM employees WHERE state = 'alive'", nativeQuery = true)
+    List<Employee> findActiveEmployees();
 }
